@@ -86,12 +86,12 @@ class Mixin {
             $baseClass = array_pop($parts);
             $ns = implode('\\', $parts);
         }
-        $declaration = 'namespace ' . $ns . ' { class ' . $baseClass . '_MIXED extends ' . $class . ' implements \MixinPHP\Mixable {';
+        $declaration = 'namespace ' . $ns . ' { class ' . $baseClass . '_MIXED extends ' . $baseClass . ' implements \MixinPHP\Mixable {';
         $reflector = new \ReflectionClass($class);
         foreach ($reflector->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $declaration .= static::parseMethodDeclaration($method);
         }
-        $declaration .= static::getDefaultClassBody($class);
+        $declaration .= static::getDefaultClassBody($baseClass);
         return $declaration . '} }';
     }
 
@@ -173,7 +173,7 @@ class Mixin {
                      } elseif (isset($this->__parent__->$name)) {
                          return $this->__parent__->$name;
                      }
-                     return Closure::bind(function() use ($name) {
+                     return \Closure::bind(function() use ($name) {
                          return call_user_func_array(array($this, $name), func_get_args());
                      }, $this);
                  }
