@@ -11,12 +11,12 @@ $dynamicArray = Mixin::create($array);
 
 // now, let's change the behavior of offsetSet to automatically resize...
 
-$dynamicArray->offsetSet = function($index, $value) {
+$dynamicArray->offsetSet = \Closure::bind(function($index, $value) {
     if ($index >= $this->getSize()) {
         $this->setSize($index + 1);
     }
     return $this->parent->offsetSet($index, $value);
-};
+}, $dynamicArray);
 
 for ($i = 0; $i < 100; $i++) {
     $dynamicArray[$i] = $i;
